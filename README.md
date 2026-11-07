@@ -7,7 +7,7 @@
 This is a fresh clone from the template. Before writing any code 
 
 ```bash
- npm init -y --init-type=moduce
+ npm init -y --init-type=module
 ```
 
 ```bash
@@ -27,7 +27,7 @@ npm run setup
 
 ```bash
 git clone <repo_url>
-cd commit
+cd <repo_name>
 ```
 
 2. Install the necessary dependencies
