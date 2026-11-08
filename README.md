@@ -2,18 +2,6 @@
 
 ## Requirement & Features
 
-<!-- SETUP:START -->
-## ⚠️ First-time Setup
-This is a fresh clone from the template. Before writing any code 
-
-```bash
- npm init -y --init-type=module
-```
-
-```bash
-npm run setup
-```
-<!-- SETUP:END -->
 
 ## Getting Started
 
