@@ -2,6 +2,10 @@
 import Cell from "./cell.js";
 
 export default function knightMoves(start, end) {
+  if (!(validity(...start) && validity(...end))) {
+    throw new Error("Invalid start or end board square");
+  }
+
   const knightCell = new Cell(...start);
   const pawnCell = new Cell(...end);
 
@@ -31,7 +35,9 @@ const findPath = (knightCell, pawnCell) => {
   }
 };
 
-const validity = (axis) => axis >= 0 && axis < 8;
+const validity = (x, y) => {
+  return x >= 0 && x < 8 && y >= 0 && y < 8;
+};
 
 const validMoves = (cell) => {
   //returns the valid knigth moves at a current cell.
@@ -52,7 +58,7 @@ const validMoves = (cell) => {
     const x = cell.x + move[0];
     const y = cell.y + move[1];
 
-    if (validity(x) && validity(y)) {
+    if (validity(x, y)) {
       const newCell = new Cell(x, y);
       newCell.prevInPath = cell; //doing this for mapping path
       if (!newCell.compare(cell.prevInPath)) validCells.push(newCell);
@@ -60,6 +66,3 @@ const validMoves = (cell) => {
   }
   return validCells;
 };
-
-// const cell = new Cell(0, 0);
-// console.log(validMoves(cell));

@@ -17,6 +17,12 @@ describe("testing knight travails", () => {
     ]);
   });
 
+  test("test invalid path, sad path: [3, 9], to [3, 8]", () => {
+    expect(() => {
+      knightMoves([3, 8], [3, 9]);
+    }).toThrow();
+  });
+
   test("test five [3, 3] to [4, 3]", () => {
     expect(knightMoves([3, 3], [4, 3])).toStrictEqual([
       [3, 3],
