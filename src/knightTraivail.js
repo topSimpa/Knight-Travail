@@ -1,8 +1,9 @@
 import GameController from "./logic/gameController.js";
+import { STATECODE } from "./constant.js";
 import pawnImage from "./images/pawn.svg";
 import knightImage from "./images/knight.svg";
 
-export default function DomController(boardUI, piecesBox) {
+export default function DomController(boardUI, piecesBox, instruction) {
   const game = new GameController();
   const pieceType = {
     pawn: "one",
@@ -24,6 +25,7 @@ export default function DomController(boardUI, piecesBox) {
         piece.addEventListener("dragstart", dragPawn);
     }
 
+    piece.classList.add("chess-piece");
     piece.addEventListener("dragend", dragEnd);
     target.append(piece);
   };
@@ -46,7 +48,7 @@ export default function DomController(boardUI, piecesBox) {
           inner.classList.add("inner-white");
         }
 
-        inner.addEventListener("dragenter", dragEnterHandler);
+        // inner.addEventListener("dragenter", dragEnterHandler);
         inner.addEventListener("dragover", dragOverHandler);
         inner.addEventListener("drop", dragDropHandler);
         cell.append(inner);
@@ -63,11 +65,30 @@ export default function DomController(boardUI, piecesBox) {
   const cellEqual = (cellA, cellB) =>
     cellA[0] === cellB[0] && cellA[1] == cellB[1];
 
+  const clickCancel = () => {
+    const pieces = document.querySelectorAll(".chess-piece");
+    const knightPath = document.querySelectorAll(".knight");
+    const pawnPath = document.querySelectorAll(".pawn");
+    const nextPath = document.querySelectorAll(".next");
+
+    pieces.forEach((piece) => piece.remove());
+    knightPath.forEach((point) => point.classList.remove("knight"));
+    pawnPath.forEach((point) => point.remove("pawn"));
+    nextPath.forEach((point) => point.remove("next"));
+
+    addPieces(pieceType.knight, piecesBox);
+    addPieces(pieceType.pawn, piecesBox);
+    game.reset();
+    stateReport();
+  };
+
   const clickShowPath = () => {
     if (!game.status) return;
-
-    game.showPath();
-    nextMove();
+    if (game.showPath()) {
+      nextMove();
+      togglePawnDragAbility(false);
+    }
+    stateReport();
   };
 
   const dragKnight = (event) => dragPiece(event, pieceType.knight);
@@ -79,34 +100,29 @@ export default function DomController(boardUI, piecesBox) {
     event.dataTransfer.setData("text/plain", type);
   };
 
-  const dragEnterHandler = (event) => {
+  const dragOverHandler = (event) => {
     const target = event.currentTarget;
     const cell = [Number(target.dataset.x), Number(target.dataset.y)];
     const nextCell = game.nextCell;
-    console.log("drag--enter");
-    console.log(game.status, nextCell);
     if (!(game.status || cellEqual(cell, nextCell))) {
-      console.log("not dropabale");
       event.dataTransfer.dropEffect = "none";
       return;
     }
-    event.dataTransfer.dropEffect = "move";
-  };
-
-  const dragOverHandler = (event) => {
-    if (event.dataTransfer.dropEffect === "none") return;
+    stateReport();
     event.preventDefault();
   };
 
   const dragDropHandler = (event) => {
-    event.preventDefault();
     const target = event.currentTarget;
+
     const data = event.dataTransfer.getData("text/plain");
 
-    console.log(target);
-    console.log(data);
-
     const dataset = target.dataset;
+    const previousPiece = target.querySelector(".chess-piece");
+    if (previousPiece) {
+      previousPiece.remove();
+      addPieces(pieceType.pawn, piecesBox);
+    }
     if (data === pieceType.knight) {
       target.classList.add("knight");
       addPieces(pieceType.knight, target);
@@ -117,13 +133,16 @@ export default function DomController(boardUI, piecesBox) {
       game.pawn = [Number(dataset.x), Number(dataset.y)];
     }
 
-    if (!game.status) (nextMove(), game.nextPath());
+    if (!game.status) (game.nextPath(), nextMove());
+    event.preventDefault();
+    stateReport();
   };
 
   const dragEnd = (event) => {
     if (event.dataTransfer.dropEffect === "none") return;
     const target = event.currentTarget;
     const parent = target.parentNode;
+
     if (game.status) {
       switch (target.id) {
         case `piece-${pieceType.pawn}`:
@@ -134,7 +153,7 @@ export default function DomController(boardUI, piecesBox) {
       }
     } else parent.classList.remove("next");
     target.remove();
-    console.log(game._pawnCell, game._knightCell);
+    stateReport();
   };
 
   const nextMove = () => {
@@ -146,13 +165,59 @@ export default function DomController(boardUI, piecesBox) {
       `[data-x="${nextCell[0]}"][data-y="${nextCell[1]}"]`,
     );
 
-    console.log(cell);
     cell.classList.add("next");
+  };
+
+  const stateReport = () => {
+    const span = document.createElement("span");
+    let reset = document.createElement("span");
+    switch (game.state()) {
+      case STATECODE.placeKnight:
+        span.textContent = state_message.knight;
+        span.classList.add("grey");
+        break;
+      case STATECODE.placePawn:
+        span.textContent = state_message.pawn;
+        span.classList.add("grey");
+        break;
+      case STATECODE.clickShowPath:
+        span.textContent = state_message.clickShowPath;
+        span.classList.add("green");
+        break;
+      case STATECODE.makeMove:
+        span.textContent = state_message.makeMove;
+        span.classList.add("green");
+        break;
+      case STATECODE.arrived:
+        span.textContent = state_message.arrived;
+        span.classList.add("green");
+        reset.textContent = state_message.reset;
+        reset.classList.add("red");
+        span.append(reset);
+    }
+
+    instruction.textContent = "";
+    instruction.append(span);
+  };
+
+  const togglePawnDragAbility = (bool) => {
+    const pawn = document.querySelector(`#piece-${pieceType.pawn}`);
+    pawn.draggable = bool;
   };
 
   buildBoard();
 
   return {
     clickShowPath,
+    clickCancel,
   };
 }
+
+const state_message = {
+  knight: "drag the knight piece to any square on the board",
+  pawn: "drag the pawn piece to any square on the board",
+  makeMove: "move knight to the other light green square",
+  clickShowPath: "click show path",
+  arrived: "checkMate! we followed the shortest path. ",
+  reset: "want another set, reset",
+};

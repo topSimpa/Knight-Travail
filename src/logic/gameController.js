@@ -1,4 +1,5 @@
 import knightMoves from "./knightMoves.js";
+import { STATECODE } from "../constant.js";
 
 export default class GameController {
   #row = 8;
@@ -32,8 +33,7 @@ export default class GameController {
     if (this._nextPath.length === 0) return;
 
     if (this.#currIndex >= this._nextPath.length) {
-      this.#currIndex = 1;
-      this._nextPath = [];
+      this.reset();
       return;
     }
 
@@ -44,16 +44,33 @@ export default class GameController {
     return this._status;
   }
 
-  showPath() {
-    if (!this._status) throw new Error("Controller busy");
+  reset() {
+    this._pawnCell = undefined;
+    this._knightCell = undefined;
+    this.toggleStatus();
+    this._nextPath = [];
+    this.#currIndex = 1;
+  }
 
-    if (!(this._pawnCell && this._knightCell)) {
-      throw new Error("pawn or knight position invalid");
-    }
+  state() {
+    if (!this._knightCell) {
+      return STATECODE.placeKnight;
+    } else if (!this._pawnCell) {
+      return STATECODE.placePawn;
+    } else if (this.status) {
+      return STATECODE.clickShowPath;
+    } else if (this.#currIndex < this._nextPath.length) {
+      return STATECODE.makeMove;
+    } else return STATECODE.arrived;
+  }
+
+  showPath() {
+    if (!(this._pawnCell && this._knightCell && this._status)) return false;
 
     this.toggleStatus();
 
-    this._nextPath = knightMoves(this._pawnCell, this._knightCell);
+    this._nextPath = knightMoves(this._knightCell, this._pawnCell);
+    return true;
   }
 
   toggleStatus() {
