@@ -111,7 +111,7 @@ main .content {
 }
 
 .board-platform .board {
-    background-image: url("./images/board-background.png");
+    background-image: url("./images/board-background.jpg");
     background-position: center;
     background-size: contain;
     background-color: black;
