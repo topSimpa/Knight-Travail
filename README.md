@@ -5,11 +5,15 @@ In CS we refer to this kind of Problem as `Shortest Path Problem`. It is a probl
 that is associated or solved using the `map` data structure. The project is one of the
 milestone project in The Odin Project [TOP](https://www.theodinproject.com/lessons/javascript-knights-travails)
 
+## PREVIEW
+[Knight Travail](./src/images/preview.png)
+
 ## Requirement & Features
 - To build a function knightMoves that shows the shortest possible way to get from one square to another by outputting all squares the knight will stop on along the way
 
 - (`optional`) To build a web GUI that demonstrate the use of the algorithm
 - (`optional`) The user should be interactive
+
 
 ## Getting Started
 
