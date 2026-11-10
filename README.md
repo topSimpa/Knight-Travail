@@ -6,7 +6,7 @@ that is associated or solved using the `map` data structure. The project is one 
 milestone project in The Odin Project [TOP](https://www.theodinproject.com/lessons/javascript-knights-travails)
 
 ## PREVIEW
-![Knight Travail](./src/images/preview.png)
+![Knight Travail](./src/images/preview.webp)
 
 ## Requirement & Features
 - To build a function knightMoves that shows the shortest possible way to get from one square to another by outputting all squares the knight will stop on along the way
