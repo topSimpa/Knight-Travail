@@ -8,7 +8,8 @@ milestone project in The Odin Project [TOP](https://www.theodinproject.com/lesso
 ## Requirement & Features
 - To build a function knightMoves that shows the shortest possible way to get from one square to another by outputting all squares the knight will stop on along the way
 
-- (`optional`) To build a web GUI to simulate the algorithm
+- (`optional`) To build a web GUI that demonstrate the use of the algorithm
+- (`optional`) The user should be interactive
 
 ## Getting Started
 
