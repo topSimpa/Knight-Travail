@@ -1,4 +1,4 @@
-import knightMoves from "./knightMoves.js";
+import knightMoves from "../src/logic/knightMoves.js";
 
 describe("testing knight travails", () => {
   test("test one [0,0] to [1, 2]", () => {
