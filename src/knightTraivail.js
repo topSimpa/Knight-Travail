@@ -119,7 +119,7 @@ export default function DomController(boardUI, piecesBox, instruction) {
     const data = event.dataTransfer.getData("text/plain");
 
     const dataset = target.dataset;
-    //if there is a piece in that cell
+    //if there is a piece in that cell remove
     //this only happens when a pawn is found
     const previousPiece = target.querySelector(".chess-piece");
     if (previousPiece) {
