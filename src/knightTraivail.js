@@ -67,14 +67,14 @@ export default function DomController(boardUI, piecesBox, instruction) {
 
   const clickCancel = () => {
     const pieces = document.querySelectorAll(".chess-piece");
-    const knightPath = document.querySelectorAll(".knight");
-    const pawnPath = document.querySelectorAll(".pawn");
+    const knightPath = document.querySelectorAll(".knight-visited");
+    const pawnPath = document.querySelectorAll(".pawn-visited");
     const nextPath = document.querySelectorAll(".next");
 
     pieces.forEach((piece) => piece.remove());
-    knightPath.forEach((point) => point.classList.remove("knight"));
-    pawnPath.forEach((point) => point.remove("pawn"));
-    nextPath.forEach((point) => point.remove("next"));
+    knightPath.forEach((point) => point.classList.remove("knight-visited"));
+    pawnPath.forEach((point) => point.classList.remove("pawn-visited"));
+    nextPath.forEach((point) => point.classList.remove("next"));
 
     addPieces(pieceType.knight, piecesBox);
     addPieces(pieceType.pawn, piecesBox);
@@ -105,6 +105,7 @@ export default function DomController(boardUI, piecesBox, instruction) {
     const cell = [Number(target.dataset.x), Number(target.dataset.y)];
     const nextCell = game.nextCell;
     if (!(game.status || cellEqual(cell, nextCell))) {
+      console.log(game.status);
       event.dataTransfer.dropEffect = "none";
       return;
     }
@@ -124,11 +125,11 @@ export default function DomController(boardUI, piecesBox, instruction) {
       addPieces(pieceType.pawn, piecesBox);
     }
     if (data === pieceType.knight) {
-      target.classList.add("knight");
+      target.classList.add("knight-visited");
       addPieces(pieceType.knight, target);
       game.knight = [Number(dataset.x), Number(dataset.y)];
     } else if (data === pieceType.pawn) {
-      target.classList.add("pawn");
+      target.classList.add("pawn-visited");
       addPieces(pieceType.pawn, target);
       game.pawn = [Number(dataset.x), Number(dataset.y)];
     }
@@ -146,10 +147,10 @@ export default function DomController(boardUI, piecesBox, instruction) {
     if (game.status) {
       switch (target.id) {
         case `piece-${pieceType.pawn}`:
-          parent.classList.remove("pawn");
+          parent.classList.remove("pawn-visited");
           break;
         case `piece-${pieceType.knight}`:
-          parent.classList.remove("knight");
+          parent.classList.remove("knight-visited");
       }
     } else parent.classList.remove("next");
     target.remove();
