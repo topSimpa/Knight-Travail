@@ -147,7 +147,7 @@ export default function DomController(boardUI, piecesBox, instruction) {
     const parent = target.parentNode;
 
     //removing piece from previous on successful drop
-    if (game.state() !== STATECODE.makeMove) {
+    if (game.state() <= STATECODE.clickShowPath) {
       //only show visited path when in path moving
       //not for placing pieces
       switch (target.id) {
