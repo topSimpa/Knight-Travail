@@ -10,6 +10,8 @@ export default function DomController(boardUI, piecesBox, instruction) {
     knight: "two",
   };
 
+  let moveCount = 0;
+
   const addPieces = (type, target) => {
     const piece = document.createElement("img");
 
@@ -73,12 +75,19 @@ export default function DomController(boardUI, piecesBox, instruction) {
     const nextPath = document.querySelectorAll(".next");
 
     pieces.forEach((piece) => piece.remove());
-    knightPath.forEach((point) => point.classList.remove("knight-visited"));
+    knightPath.forEach((point) => {
+      point.classList.remove("knight-visited");
+      point.textContent = "";
+    });
     pawnPath.forEach((point) => point.classList.remove("pawn-visited"));
-    nextPath.forEach((point) => point.classList.remove("next"));
+    nextPath.forEach((point) => {
+      point.classList.remove("next");
+      point.textContent = "";
+    });
 
     addPieces(pieceType.knight, piecesBox);
     addPieces(pieceType.pawn, piecesBox);
+    moveCount = 0;
     game.reset();
     stateReport();
   };
@@ -157,7 +166,10 @@ export default function DomController(boardUI, piecesBox, instruction) {
         case `piece-${pieceType.knight}`:
           parent.classList.remove("knight-visited");
       }
-    } else parent.classList.remove("next");
+    } else {
+      parent.classList.remove("next");
+      parent.append(moveCount++);
+    }
     target.remove();
     stateReport();
   };
