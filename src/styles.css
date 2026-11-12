@@ -142,11 +142,11 @@ main .content {
     justify-content: center;
 }
 
-.cell .inner.knight {
+.cell .inner.knight-visited {
     background-color: #797B80;
 }
 
-.cell .inner.pawn {
+.cell .inner.pawn-visited {
     background-color: #CA727B;
 }
 

@@ -40,14 +40,10 @@ export default class GameController {
     this.#currIndex++;
   }
 
-  get status() {
-    return this._status;
-  }
-
   reset() {
     this._pawnCell = undefined;
     this._knightCell = undefined;
-    this.toggleStatus();
+    this._status = true;
     this._nextPath = [];
     this.#currIndex = 1;
   }
@@ -57,7 +53,7 @@ export default class GameController {
       return STATECODE.placeKnight;
     } else if (!this._pawnCell) {
       return STATECODE.placePawn;
-    } else if (this.status) {
+    } else if (this._status) {
       return STATECODE.clickShowPath;
     } else if (this.#currIndex < this._nextPath.length) {
       return STATECODE.makeMove;
@@ -65,15 +61,11 @@ export default class GameController {
   }
 
   showPath() {
-    if (!(this._pawnCell && this._knightCell && this._status)) return false;
+    if (this.state() !== STATECODE.clickShowPath) return false;
 
-    this.toggleStatus();
+    this._status = false;
 
     this._nextPath = knightMoves(this._knightCell, this._pawnCell);
     return true;
-  }
-
-  toggleStatus() {
-    this._status = !this._status;
   }
 }

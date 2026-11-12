@@ -65,7 +65,8 @@ export default function DomController(boardUI, piecesBox, instruction) {
   const cellEqual = (cellA, cellB) =>
     cellA[0] === cellB[0] && cellA[1] == cellB[1];
 
-  const clickCancel = () => {
+  const clickReset = () => {
+    if (game.state() === STATECODE.placeKnight) return;
     const pieces = document.querySelectorAll(".chess-piece");
     const knightPath = document.querySelectorAll(".knight-visited");
     const pawnPath = document.querySelectorAll(".pawn-visited");
@@ -83,12 +84,12 @@ export default function DomController(boardUI, piecesBox, instruction) {
   };
 
   const clickShowPath = () => {
-    if (!game.status) return;
+    stateReport();
+    if (game.state() !== STATECODE.clickShowPath) return;
     if (game.showPath()) {
       nextMove();
       togglePawnDragAbility(false);
     }
-    stateReport();
   };
 
   const dragKnight = (event) => dragPiece(event, pieceType.knight);
@@ -104,12 +105,11 @@ export default function DomController(boardUI, piecesBox, instruction) {
     const target = event.currentTarget;
     const cell = [Number(target.dataset.x), Number(target.dataset.y)];
     const nextCell = game.nextCell;
-    if (!(game.status || cellEqual(cell, nextCell))) {
-      console.log(game.status);
+    const isPlacingPieces = game.state() <= STATECODE.clickShowPath;
+    if (!(isPlacingPieces || cellEqual(cell, nextCell))) {
       event.dataTransfer.dropEffect = "none";
       return;
     }
-    stateReport();
     event.preventDefault();
   };
 
@@ -119,6 +119,8 @@ export default function DomController(boardUI, piecesBox, instruction) {
     const data = event.dataTransfer.getData("text/plain");
 
     const dataset = target.dataset;
+    //if there is a piece in that cell
+    //this only happens when a pawn is found
     const previousPiece = target.querySelector(".chess-piece");
     if (previousPiece) {
       previousPiece.remove();
@@ -144,7 +146,10 @@ export default function DomController(boardUI, piecesBox, instruction) {
     const target = event.currentTarget;
     const parent = target.parentNode;
 
-    if (game.status) {
+    //removing piece from previous on successful drop
+    if (game.state() !== STATECODE.makeMove) {
+      //only show visited path when in path moving
+      //not for placing pieces
       switch (target.id) {
         case `piece-${pieceType.pawn}`:
           parent.classList.remove("pawn-visited");
@@ -159,7 +164,6 @@ export default function DomController(boardUI, piecesBox, instruction) {
 
   const nextMove = () => {
     const nextCell = game.nextCell;
-    console.log(nextCell);
     if (nextCell.length === 0) return;
 
     const cell = document.querySelector(
@@ -210,7 +214,7 @@ export default function DomController(boardUI, piecesBox, instruction) {
 
   return {
     clickShowPath,
-    clickCancel,
+    clickReset,
   };
 }
 
