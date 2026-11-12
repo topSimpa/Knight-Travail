@@ -73,7 +73,7 @@ main .content {
     border: 1px solid #797B80;
 }
 
-.game-buttons .buttons#cancel {
+.game-buttons .buttons#reset {
     background-color: #CA727B;
 }
 
